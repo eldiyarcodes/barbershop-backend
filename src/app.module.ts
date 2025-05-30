@@ -4,7 +4,7 @@ import { APP_GUARD } from '@nestjs/core'
 import { SequelizeModule } from '@nestjs/sequelize'
 import { AuthModule } from './auth/auth.module'
 import { RolesGuard } from './common/guards/roles.guard'
-import { User } from './users/users.model'
+import { User } from './users/model/users.model'
 import { UsersModule } from './users/users.module'
 
 @Module({

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsEmail, IsEnum, IsOptional, IsString, Length } from 'class-validator'
-import { USER_ROLE } from '../users.model'
+import { USER_ROLE } from '../model/users.model'
 
 export class UserDto {
 	@ApiProperty({ example: 'example@icloud.com', description: 'Email address' })
