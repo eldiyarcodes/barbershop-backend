@@ -12,5 +12,5 @@ export const CONFIG = {
 	POSTGRES_DB: process.env.POSTGRES_DB,
 
 	JWT_SECRET: process.env.JWT_SECRET,
-	JWT_REFRESH: process.env.JWT_REFRESH_SECRET as string,
+	JWT_TOKEN_KEY: process.env.JWT_TOKEN_KEY as string,
 }

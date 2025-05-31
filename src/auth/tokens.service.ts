@@ -19,15 +19,6 @@ export class TokensService {
 		return { accessToken, refreshToken }
 	}
 
-	setRefreshTokenCookie(res: Response, token: string) {
-		res.cookie(CONFIG.JWT_REFRESH, token, {
-			httpOnly: true,
-			secure: false,
-			sameSite: 'lax',
-			maxAge: 7 * 24 * 60 * 60 * 1000,
-		})
-	}
-
 	validateRefreshToken(token: string): any {
 		try {
 			return this.jwtService.verify(token)

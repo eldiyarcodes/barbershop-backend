@@ -5,10 +5,11 @@ import { UsersModule } from 'src/users/users.module'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { TokensService } from './tokens.service'
+import { CookieService } from './cookie.service'
 
 @Module({
 	controllers: [AuthController],
-	providers: [AuthService, TokensService],
+	providers: [AuthService, TokensService, CookieService],
 	imports: [
 		forwardRef(() => UsersModule),
 		JwtModule.register({

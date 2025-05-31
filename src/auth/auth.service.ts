@@ -1,8 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import * as bcrypt from 'bcryptjs'
-import { Request, Response } from 'express'
-import { CONFIG } from 'src/config/config'
-import { UserDto } from 'src/users/dto/users.dto'
+import { Request } from 'express'
 import { USER_ROLE } from 'src/users/model/users.model'
 import { UsersService } from 'src/users/users.service'
 import { TokensService } from './tokens.service'
@@ -14,18 +12,15 @@ export class AuthService {
 		private tokensService: TokensService
 	) {}
 
-	async registration(
-		userDto: { email: string; password: string },
-		res: Response
-	) {
-		const candidate = await this.userService.getUserByEmail(userDto.email)
+	async registration(email: string, password: string) {
+		const candidate = await this.userService.getUserByEmail(email)
 		if (candidate) {
 			throw new HttpException('Email уже занят', HttpStatus.BAD_REQUEST)
 		}
 
-		const hashPassword = await bcrypt.hash(userDto.password, 10)
+		const hashPassword = await bcrypt.hash(password, 10)
 		const { user } = await this.userService.createUser({
-			...userDto,
+			email,
 			password: hashPassword,
 			role: USER_ROLE.USER,
 		})
@@ -36,38 +31,22 @@ export class AuthService {
 			role: user.role,
 		})
 
-		this.tokensService.setRefreshTokenCookie(res, tokens.refreshToken)
-
-		return { access_token: tokens.accessToken }
+		return tokens
 	}
 
-	async login(userDto: UserDto, res: Response) {
-		const user = await this.validateUser(userDto)
+	async login(email: string, password: string) {
+		const user = await this.validateUser(email, password)
+
 		const tokens = this.tokensService.generateTokens({
 			id: user.id,
 			email: user.email,
 			role: user.role,
 		})
 
-		this.tokensService.setRefreshTokenCookie(res, tokens.refreshToken)
-
-		return { access_token: tokens.accessToken }
+		return tokens
 	}
 
-	async logout(res: Response) {
-		res.clearCookie(CONFIG.JWT_REFRESH, {
-			httpOnly: true,
-			secure: true,
-			sameSite: 'strict',
-		})
-
-		return {
-			status: 'success',
-			message: 'Logout successful',
-		}
-	}
-
-	async refreshToken(req: Request, res: Response) {
+	async refreshToken(req: Request) {
 		const refreshToken = req.cookies?.refresh_token
 		if (!refreshToken) {
 			throw new HttpException('Нет токена', HttpStatus.UNAUTHORIZED)
@@ -86,16 +65,11 @@ export class AuthService {
 			role: user.role,
 		})
 
-		this.tokensService.setRefreshTokenCookie(res, tokens.refreshToken)
-
-		return {
-			status: 'success',
-			access_token: tokens.accessToken,
-		}
+		return tokens
 	}
 
-	private async validateUser(userDto: UserDto) {
-		const user = await this.userService.getUserByEmail(userDto.email)
+	private async validateUser(email: string, password: string) {
+		const user = await this.userService.getUserByEmail(email)
 
 		if (!user) {
 			throw new HttpException(
@@ -104,7 +78,7 @@ export class AuthService {
 			)
 		}
 
-		const passwordEquals = await bcrypt.compare(userDto.password, user.password)
+		const passwordEquals = await bcrypt.compare(password, user.password)
 
 		if (user && passwordEquals) {
 			return user

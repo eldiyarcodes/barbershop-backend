@@ -16,23 +16,36 @@ import {
 } from '@nestjs/swagger'
 import { Request, Response } from 'express'
 import { ValidationPipe } from 'src/common/pipes/validation.pipe'
-import { UserDto } from 'src/users/dto/users.dto'
 import { AuthService } from './auth.service'
+import { CookieService } from './cookie.service'
 
 @ApiTags('Auth')
 @Controller('api/v1/auth')
 export class AuthController {
-	constructor(private authService: AuthService) {}
+	constructor(
+		private authService: AuthService,
+		private cookieService: CookieService
+	) {}
 
 	@ApiOperation({ summary: 'Register' })
 	@UsePipes(ValidationPipe)
 	@ApiCreatedResponse()
 	@Post('/sign-up')
 	async registration(
-		@Body() body: { email: string, password: string },
+		@Body() body: { email: string; password: string },
 		@Res({ passthrough: true }) res: Response
 	) {
-		return this.authService.registration(body, res)
+		const tokens = await this.authService.registration(
+			body.email,
+			body.password
+		)
+
+		this.cookieService.setToken(res, tokens.refreshToken)
+
+		return {
+			status: 'ok',
+			access_token: tokens.accessToken,
+		}
 	}
 
 	@ApiOperation({ summary: 'Login' })
@@ -40,10 +53,17 @@ export class AuthController {
 	@HttpCode(HttpStatus.OK)
 	@Post('/sign-in')
 	async login(
-		@Body() userDto: UserDto,
+		@Body() body: { email: string; password: string },
 		@Res({ passthrough: true }) res: Response
 	) {
-		return this.authService.login(userDto, res)
+		const tokens = await this.authService.login(body.email, body.password)
+
+		this.cookieService.setToken(res, tokens.refreshToken)
+
+		return {
+			status: 'ok',
+			access_token: tokens.accessToken,
+		}
 	}
 
 	@ApiOperation({ summary: 'Logout' })
@@ -51,7 +71,7 @@ export class AuthController {
 	@HttpCode(HttpStatus.OK)
 	@Post('/sign-out')
 	async logout(@Res({ passthrough: true }) res: Response) {
-		return this.authService.logout(res)
+		this.cookieService.removeToken(res)
 	}
 
 	@ApiOperation({ summary: 'Refresh token' })
@@ -62,6 +82,13 @@ export class AuthController {
 		@Req() req: Request,
 		@Res({ passthrough: true }) res: Response
 	) {
-		return this.authService.refreshToken(req, res)
+		const tokens = await this.authService.refreshToken(req)
+
+		this.cookieService.setToken(res, tokens.refreshToken)
+
+		return {
+			status: 'ok',
+			access_token: tokens.accessToken,
+		}
 	}
 }
