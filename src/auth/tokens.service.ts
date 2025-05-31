@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Response } from 'express'
+import { CONFIG } from 'src/config/config'
 
 @Injectable()
 export class TokensService {
@@ -19,12 +20,10 @@ export class TokensService {
 	}
 
 	setRefreshTokenCookie(res: Response, token: string) {
-		const isProd = process.env.NODE_ENV === 'production'
-
-		res.cookie('refresh_token', token, {
+		res.cookie(CONFIG.JWT_REFRESH, token, {
 			httpOnly: true,
-			secure: isProd,
-			sameSite: isProd ? 'none' : 'lax',
+			secure: false,
+			sameSite: 'lax',
 			maxAge: 7 * 24 * 60 * 60 * 1000,
 		})
 	}

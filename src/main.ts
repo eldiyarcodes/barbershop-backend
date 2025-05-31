@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import * as cookieParser from 'cookie-parser'
+import { CONFIG } from 'src/config/config'
 import { AppModule } from './app.module'
 import { ValidationPipe } from './common/pipes/validation.pipe'
 
-async function start() {
-	const PORT = process.env.PORT || 5000
+async function run() {
+	const PORT = CONFIG.PORT || 5000
 	const app = await NestFactory.create(AppModule)
 
 	app.enableCors({
@@ -16,17 +17,16 @@ async function start() {
 	app.use(cookieParser())
 	app.useGlobalPipes(new ValidationPipe())
 
-	const config = new DocumentBuilder()
-		.setTitle('API Documentation Clone Miro')
+	const documentConfig = new DocumentBuilder()
+		.setTitle('API Documentation Barbershop')
 		.setDescription('REST API Documentation')
 		.setVersion('1.0.0')
-		.addTag('@eldiyarchess')
 		.build()
 
-	const document = SwaggerModule.createDocument(app, config)
+	const document = SwaggerModule.createDocument(app, documentConfig)
 	SwaggerModule.setup('/api/swagger-ui', app, document)
 
 	await app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
 }
 
-start()
+run()

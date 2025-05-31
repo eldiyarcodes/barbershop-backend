@@ -1,7 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import * as bcrypt from 'bcryptjs'
 import { Request, Response } from 'express'
+import { CONFIG } from 'src/config/config'
 import { UserDto } from 'src/users/dto/users.dto'
+import { USER_ROLE } from 'src/users/model/users.model'
 import { UsersService } from 'src/users/users.service'
 import { TokensService } from './tokens.service'
 
@@ -11,6 +13,33 @@ export class AuthService {
 		private userService: UsersService,
 		private tokensService: TokensService
 	) {}
+
+	async registration(
+		userDto: { email: string; password: string },
+		res: Response
+	) {
+		const candidate = await this.userService.getUserByEmail(userDto.email)
+		if (candidate) {
+			throw new HttpException('Email уже занят', HttpStatus.BAD_REQUEST)
+		}
+
+		const hashPassword = await bcrypt.hash(userDto.password, 10)
+		const { user } = await this.userService.createUser({
+			...userDto,
+			password: hashPassword,
+			role: USER_ROLE.USER,
+		})
+
+		const tokens = this.tokensService.generateTokens({
+			id: user.id,
+			email: user.email,
+			role: user.role,
+		})
+
+		this.tokensService.setRefreshTokenCookie(res, tokens.refreshToken)
+
+		return { access_token: tokens.accessToken }
+	}
 
 	async login(userDto: UserDto, res: Response) {
 		const user = await this.validateUser(userDto)
@@ -22,40 +51,11 @@ export class AuthService {
 
 		this.tokensService.setRefreshTokenCookie(res, tokens.refreshToken)
 
-		return {
-			status: 'success',
-			access_token: tokens.accessToken,
-		}
-	}
-
-	async registration(userDto: UserDto, res: Response) {
-		const candidate = await this.userService.getUserByEmail(userDto.email)
-		if (candidate) {
-			throw new HttpException('Email уже занят', HttpStatus.BAD_REQUEST)
-		}
-
-		const hashPassword = await bcrypt.hash(userDto.password, 10)
-		const { user } = await this.userService.createUser({
-			...userDto,
-			password: hashPassword,
-		})
-
-		const tokens = this.tokensService.generateTokens({
-			id: user.id,
-			email: user.email,
-			role: user.role,
-		})
-
-		this.tokensService.setRefreshTokenCookie(res, tokens.refreshToken)
-
-		return {
-			status: 'success',
-			access_token: tokens.accessToken,
-		}
+		return { access_token: tokens.accessToken }
 	}
 
 	async logout(res: Response) {
-		res.clearCookie('refresh_token', {
+		res.clearCookie(CONFIG.JWT_REFRESH, {
 			httpOnly: true,
 			secure: true,
 			sameSite: 'strict',
