@@ -1,13 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { Response } from 'express'
-import { CONFIG } from 'src/config/config'
+import { USER_ROLE } from 'src/users/model/users.model'
 
 @Injectable()
 export class TokensService {
 	constructor(private jwtService: JwtService) {}
 
-	generateTokens(payload: any) {
+	generateTokens(payload: { id: number; email: string; role: USER_ROLE }) {
 		const accessToken = this.jwtService.sign(payload, {
 			expiresIn: '15m',
 		})
@@ -23,7 +22,7 @@ export class TokensService {
 		try {
 			return this.jwtService.verify(token)
 		} catch (e) {
-			throw new UnauthorizedException('Invalid refresh token')
+			throw new UnauthorizedException('Токен недействителен')
 		}
 	}
 }

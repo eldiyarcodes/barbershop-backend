@@ -14,10 +14,7 @@ export class UsersService {
 
 	async getAllUsers() {
 		const users = await this.userRepository.findAll()
-		return {
-			status: 'success',
-			data: users,
-		}
+		return users
 	}
 
 	async getUserByEmail(email: string) {
@@ -25,6 +22,7 @@ export class UsersService {
 			where: { email },
 			attributes: ['id', 'email', 'password', 'role', 'createdAt', 'updatedAt'],
 		})
+		
 		const plainUser = user?.get({ plain: true })
 		return plainUser
 	}

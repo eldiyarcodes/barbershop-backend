@@ -8,17 +8,13 @@ import {
 	Res,
 	UsePipes,
 } from '@nestjs/common'
-import {
-	ApiCreatedResponse,
-	ApiOkResponse,
-	ApiOperation,
-	ApiTags,
-} from '@nestjs/swagger'
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Request, Response } from 'express'
 import { ValidationPipe } from 'src/common/pipes/validation.pipe'
 import { CreateUserDto } from 'src/users/dto/users.dto'
 import { AuthService } from './auth.service'
 import { CookieService } from './cookie.service'
+import { AuthOkResponseDto } from './dto/auth.dto'
 
 @ApiTags('Auth')
 @Controller('api/v1/auth')
@@ -29,8 +25,8 @@ export class AuthController {
 	) {}
 
 	@ApiOperation({ summary: 'Register' })
+	@ApiOkResponse({ type: AuthOkResponseDto })
 	@UsePipes(ValidationPipe)
-	@ApiCreatedResponse()
 	@Post('/sign-up')
 	async registration(
 		@Body() body: CreateUserDto,
@@ -50,8 +46,7 @@ export class AuthController {
 	}
 
 	@ApiOperation({ summary: 'Login' })
-	@ApiOkResponse()
-	@HttpCode(HttpStatus.OK)
+	@ApiOkResponse({ type: AuthOkResponseDto })
 	@Post('/sign-in')
 	async login(
 		@Body() body: CreateUserDto,
@@ -76,8 +71,7 @@ export class AuthController {
 	}
 
 	@ApiOperation({ summary: 'Refresh token' })
-	@ApiOkResponse()
-	@HttpCode(HttpStatus.OK)
+	@ApiOkResponse({ type: AuthOkResponseDto })
 	@Post('/refresh')
 	async refresh(
 		@Req() req: Request,
