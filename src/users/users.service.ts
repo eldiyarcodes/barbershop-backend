@@ -9,10 +9,7 @@ export class UsersService {
 
 	async createUser(dto: UserDto) {
 		const user = await this.userRepository.create(dto)
-		return {
-			status: 'success',
-			user,
-		}
+		return user
 	}
 
 	async getAllUsers() {

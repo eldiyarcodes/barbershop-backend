@@ -25,13 +25,13 @@ export class User extends Model<User, UserCreationAttrs> {
 
 	@ApiProperty({ example: 'example@icloud.com', description: 'Email address' })
 	@Column({ type: DataType.STRING, unique: true, allowNull: false })
-	email: string
+	declare email: string
 
 	@ApiProperty({ example: 'password123', description: 'Password' })
 	@Column({ type: DataType.STRING, allowNull: false })
-	password: string
+	declare password: string
 
 	@ApiProperty({ example: 'ADMIN', description: 'User role' })
 	@Column({ type: DataType.ENUM('USER', 'ADMIN'), defaultValue: 'USER' })
-	role: USER_ROLE
+	declare role: USER_ROLE
 }

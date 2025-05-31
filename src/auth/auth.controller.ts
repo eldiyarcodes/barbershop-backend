@@ -16,6 +16,7 @@ import {
 } from '@nestjs/swagger'
 import { Request, Response } from 'express'
 import { ValidationPipe } from 'src/common/pipes/validation.pipe'
+import { CreateUserDto } from 'src/users/dto/users.dto'
 import { AuthService } from './auth.service'
 import { CookieService } from './cookie.service'
 
@@ -32,7 +33,7 @@ export class AuthController {
 	@ApiCreatedResponse()
 	@Post('/sign-up')
 	async registration(
-		@Body() body: { email: string; password: string },
+		@Body() body: CreateUserDto,
 		@Res({ passthrough: true }) res: Response
 	) {
 		const tokens = await this.authService.registration(
@@ -53,7 +54,7 @@ export class AuthController {
 	@HttpCode(HttpStatus.OK)
 	@Post('/sign-in')
 	async login(
-		@Body() body: { email: string; password: string },
+		@Body() body: CreateUserDto,
 		@Res({ passthrough: true }) res: Response
 	) {
 		const tokens = await this.authService.login(body.email, body.password)

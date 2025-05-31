@@ -13,13 +13,17 @@ export class AuthService {
 	) {}
 
 	async registration(email: string, password: string) {
+		if (!email || !password) {
+			throw new HttpException('Данные не переданы', HttpStatus.BAD_REQUEST)
+		}
+
 		const candidate = await this.userService.getUserByEmail(email)
 		if (candidate) {
 			throw new HttpException('Email уже занят', HttpStatus.BAD_REQUEST)
 		}
 
 		const hashPassword = await bcrypt.hash(password, 10)
-		const { user } = await this.userService.createUser({
+		const user = await this.userService.createUser({
 			email,
 			password: hashPassword,
 			role: USER_ROLE.USER,
@@ -35,7 +39,23 @@ export class AuthService {
 	}
 
 	async login(email: string, password: string) {
-		const user = await this.validateUser(email, password)
+		const user = await this.userService.getUserByEmail(email)
+
+		if (!user) {
+			throw new HttpException(
+				'Неверный email или пароль',
+				HttpStatus.BAD_REQUEST
+			)
+		}
+
+		const passwordEquals = await bcrypt.compare(password, user.password)
+
+		if (!passwordEquals) {
+			throw new HttpException(
+				'Неверный email или пароль',
+				HttpStatus.BAD_REQUEST
+			)
+		}
 
 		const tokens = this.tokensService.generateTokens({
 			id: user.id,
@@ -66,24 +86,5 @@ export class AuthService {
 		})
 
 		return tokens
-	}
-
-	private async validateUser(email: string, password: string) {
-		const user = await this.userService.getUserByEmail(email)
-
-		if (!user) {
-			throw new HttpException(
-				'Неверный email или пароль',
-				HttpStatus.BAD_REQUEST
-			)
-		}
-
-		const passwordEquals = await bcrypt.compare(password, user.password)
-
-		if (user && passwordEquals) {
-			return user
-		}
-
-		throw new HttpException('Неверный email или пароль', HttpStatus.BAD_REQUEST)
 	}
 }
