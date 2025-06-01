@@ -8,10 +8,17 @@ import { ConfigModule } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
 import { SequelizeModule } from '@nestjs/sequelize'
 import { BarbershopsModule } from './barbershops/barbershops.module'
+import { Barbershop } from './barbershops/model/barbershops.model'
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard'
+import { MastersModule } from './masters/masters.module'
+import { Master } from './masters/model/masters.model'
 
 @Module({
 	controllers: [],
-	providers: [{ provide: APP_GUARD, useClass: RolesGuard }],
+	providers: [
+		{ provide: APP_GUARD, useClass: JwtAuthGuard },
+		{ provide: APP_GUARD, useClass: RolesGuard },
+	],
 	imports: [
 		ConfigModule.forRoot({ envFilePath: '.env' }),
 		SequelizeModule.forRoot({
@@ -21,12 +28,13 @@ import { BarbershopsModule } from './barbershops/barbershops.module'
 			username: CONFIG.POSTGRES_USER,
 			password: CONFIG.POSTGRES_PASSWORD,
 			database: CONFIG.POSTGRES_DB,
-			models: [User],
+			models: [User, Barbershop, Master],
 			autoLoadModels: true,
 		}),
 		UsersModule,
 		AuthModule,
 		BarbershopsModule,
+		MastersModule,
 	],
 })
 export class AppModule {}

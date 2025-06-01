@@ -13,4 +13,6 @@ export const CONFIG = {
 
 	JWT_SECRET: process.env.JWT_SECRET,
 	JWT_TOKEN_KEY: process.env.JWT_TOKEN_KEY as string,
+
+	IS_PUBLIC_KEY: 'isPublic'
 }

@@ -1,10 +1,11 @@
 import { Controller, Get, UseGuards } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
-import { JwtAuthGuard } from '@/common/guards/auth.guard'
 import { Roles } from '@/common/decorators/roles.decorator'
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { RolesGuard } from '@/common/guards/roles.guard'
 import { UsersResponseDto } from './dto/users.dto'
+import { USER_ROLE } from './model/users.model'
 import { UsersService } from './users.service'
 
 @ApiTags('Users')
@@ -12,10 +13,10 @@ import { UsersService } from './users.service'
 export class UsersController {
 	constructor(private userService: UsersService) {}
 
-	@ApiOperation({ summary: 'Get all users' })
+	@ApiOperation({ summary: 'Получить всех пользователей' })
 	@ApiOkResponse({ type: UsersResponseDto })
 	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Roles('ADMIN')
+	@Roles(USER_ROLE.ADMIN)
 	@Get('/users')
 	async getAll() {
 		const data = await this.userService.getAllUsers()

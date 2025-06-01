@@ -22,7 +22,7 @@ export class UsersService {
 			where: { email },
 			attributes: ['id', 'email', 'password', 'role', 'createdAt', 'updatedAt'],
 		})
-		
+
 		const plainUser = user?.get({ plain: true })
 		return plainUser
 	}

@@ -18,11 +18,11 @@ export class Barbershop extends Model<Barbershop, BarbershopCreationAttrs> {
 	@Column({ type: DataType.STRING, allowNull: false })
 	declare name: string
 
-	@ApiProperty({ example: 'ул. Абая 10' })
+	@ApiProperty({ example: 'ул. Токтогула 10' })
 	@Column({ type: DataType.STRING, allowNull: false })
 	declare address: string
 
-	@ApiProperty({ example: '+7 700 000 00 00' })
+	@ApiProperty({ example: '+996 500 00 00 00' })
 	@Column({ type: DataType.STRING, allowNull: false })
 	declare phone: string
 

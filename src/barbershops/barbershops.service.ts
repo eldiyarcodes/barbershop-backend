@@ -35,8 +35,7 @@ export class BarbershopsService {
 
 	async deleteBarbershop(id: number) {
 		const shop = await this.getById(id)
+		
 		await shop.destroy()
-
-		return { message: 'Удалено успешно' }
 	}
 }
