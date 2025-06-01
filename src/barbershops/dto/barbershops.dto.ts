@@ -1,4 +1,6 @@
+import { ApiProperty, PartialType } from '@nestjs/swagger'
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import { Barbershop } from '../model/barbershops.model'
 
 export class CreateBarbershopDto {
 	@IsString()
@@ -29,3 +31,13 @@ export class CreateBarbershopDto {
 	@IsNotEmpty()
 	timeTo: string
 }
+
+export class CreateBarbershopOkResponseDto {
+	@ApiProperty({ example: 'ok' })
+	status: string
+
+	@ApiProperty({ type: () => Barbershop })
+	data: Barbershop
+}
+
+export class UpdateBarbershopDto extends PartialType(CreateBarbershopDto) {}

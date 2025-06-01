@@ -1,3 +1,4 @@
+import { Barbershop } from '@/barbershops/model/barbershops.model'
 import {
 	BelongsTo,
 	Column,
@@ -6,35 +7,22 @@ import {
 	Model,
 	Table,
 } from 'sequelize-typescript'
-import { Barbershop } from 'src/barbershops/model/barbershops.model'
 
 @Table({ tableName: 'masters', timestamps: true })
 export class Master extends Model<Master> {
-	@Column({
-		type: DataType.STRING,
-		allowNull: false,
-	})
-	fullName: string
+	@Column({ type: DataType.STRING, allowNull: false })
+	declare fullName: string
 
-	@Column({
-		type: DataType.STRING,
-		allowNull: false,
-	})
-	specialization: string
+	@Column({ type: DataType.STRING, allowNull: false })
+	declare specialization: string
 
 	@ForeignKey(() => Barbershop)
-	@Column({
-		type: DataType.INTEGER,
-		allowNull: false,
-	})
-	barbershopId: number
+	@Column({ type: DataType.INTEGER, allowNull: false })
+	declare barbershopId: number
 
 	@BelongsTo(() => Barbershop)
-	barbershop: Barbershop
+	declare barbershop: Barbershop
 
-	@Column({
-		type: DataType.STRING,
-		allowNull: true,
-	})
-	photoUrl: string | null
+	@Column({ type: DataType.STRING, allowNull: true })
+	declare photoUrl: string | null
 }

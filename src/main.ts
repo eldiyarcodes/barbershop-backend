@@ -1,9 +1,9 @@
+import { AppModule } from '@/app.module'
+import { ValidationPipe } from '@/common/pipes/validation.pipe'
+import { CONFIG } from '@/config/config'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import * as cookieParser from 'cookie-parser'
-import { CONFIG } from 'src/config/config'
-import { AppModule } from './app.module'
-import { ValidationPipe } from './common/pipes/validation.pipe'
 
 async function run() {
 	const PORT = CONFIG.PORT || 5000

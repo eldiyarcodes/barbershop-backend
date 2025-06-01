@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import * as bcrypt from 'bcryptjs'
 import { Request } from 'express'
-import { USER_ROLE } from 'src/users/model/users.model'
-import { UsersService } from 'src/users/users.service'
+import { USER_ROLE } from '@/users/model/users.model'
+import { UsersService } from '@/users/users.service'
 import { TokensService } from './tokens.service'
 
 @Injectable()
@@ -13,17 +13,13 @@ export class AuthService {
 	) {}
 
 	async registration(email: string, password: string) {
-		if (!email || !password) {
-			throw new HttpException('Данные не переданы', HttpStatus.BAD_REQUEST)
-		}
-
 		const candidate = await this.userService.getUserByEmail(email)
 		if (candidate) {
 			throw new HttpException('Email уже занят', HttpStatus.BAD_REQUEST)
 		}
 
 		const hashPassword = await bcrypt.hash(password, 10)
-		
+
 		const user = await this.userService.createUser({
 			email,
 			password: hashPassword,

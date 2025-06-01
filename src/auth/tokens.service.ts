@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { USER_ROLE } from 'src/users/model/users.model'
+import { USER_ROLE } from '@/users/model/users.model'
 
 @Injectable()
 export class TokensService {

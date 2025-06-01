@@ -1,50 +1,47 @@
+import { Master } from '@/masters/model/masters.model'
+import { ApiProperty } from '@nestjs/swagger'
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript'
-import { Master } from 'src/masters/model/masters.model'
+
+export interface BarbershopCreationAttrs {
+  name: string
+  address: string
+  phone: string
+  description?: string
+  workDays: string[]
+  timeFrom: string
+  timeTo: string
+}
 
 @Table({ tableName: 'barbershops', timestamps: true })
-export class Barbershop extends Model<Barbershop> {
-	@Column({
-		type: DataType.STRING,
-		allowNull: false,
-	})
-	name: string
+export class Barbershop extends Model<Barbershop, BarbershopCreationAttrs> {
+	@ApiProperty({ example: 'Gentlemen Club' })
+	@Column({ type: DataType.STRING, allowNull: false })
+	declare name: string
 
-	@Column({
-		type: DataType.STRING,
-		allowNull: false,
-	})
-	address: string
+	@ApiProperty({ example: 'ул. Абая 10' })
+	@Column({ type: DataType.STRING, allowNull: false })
+	declare address: string
 
-	@Column({
-		type: DataType.STRING,
-		allowNull: false,
-	})
-	phone: string
+	@ApiProperty({ example: '+7 700 000 00 00' })
+	@Column({ type: DataType.STRING, allowNull: false })
+	declare phone: string
 
-	@Column({
-		type: DataType.TEXT,
-		allowNull: true,
-	})
-	description: string
+	@ApiProperty({ example: 'Лучший барбершоп в городе' })
+	@Column({ type: DataType.TEXT, allowNull: true })
+	declare description: string
 
-	@Column({
-		type: DataType.ARRAY(DataType.STRING),
-		allowNull: false,
-	})
-	workDays: string[]
+	@ApiProperty({ example: ['Mon', 'Tue', 'Wed'] })
+	@Column({ type: DataType.ARRAY(DataType.STRING), allowNull: false })
+	declare workDays: string[]
 
-	@Column({
-		type: DataType.STRING,
-		allowNull: false,
-	})
-	timeFrom: string
+	@ApiProperty({ example: '10:00' })
+	@Column({ type: DataType.STRING, allowNull: false })
+	declare timeFrom: string
 
-	@Column({
-		type: DataType.STRING,
-		allowNull: false,
-	})
-	timeTo: string
+	@ApiProperty({ example: '20:00' })
+	@Column({ type: DataType.STRING, allowNull: false })
+	declare timeTo: string
 
 	@HasMany(() => Master)
-	masters: Master[]
+	declare masters: Master[]
 }

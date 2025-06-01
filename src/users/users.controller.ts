@@ -1,9 +1,9 @@
 import { Controller, Get, UseGuards } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
-import { JwtAuthGuard } from 'src/common/guards/auth.guard'
-import { Roles } from '../common/decorators/roles.decorator'
-import { RolesGuard } from '../common/guards/roles.guard'
+import { JwtAuthGuard } from '@/common/guards/auth.guard'
+import { Roles } from '@/common/decorators/roles.decorator'
+import { RolesGuard } from '@/common/guards/roles.guard'
 import { UsersResponseDto } from './dto/users.dto'
 import { UsersService } from './users.service'
 

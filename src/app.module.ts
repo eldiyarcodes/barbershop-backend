@@ -1,12 +1,13 @@
+import { AuthModule } from '@/auth/auth.module'
+import { RolesGuard } from '@/common/guards/roles.guard'
+import { CONFIG } from '@/config/config'
+import { User } from '@/users/model/users.model'
+import { UsersModule } from '@/users/users.module'
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
 import { SequelizeModule } from '@nestjs/sequelize'
-import { CONFIG } from 'src/config/config'
-import { AuthModule } from './auth/auth.module'
-import { RolesGuard } from './common/guards/roles.guard'
-import { User } from './users/model/users.model'
-import { UsersModule } from './users/users.module'
+import { BarbershopsModule } from './barbershops/barbershops.module'
 
 @Module({
 	controllers: [],
@@ -25,6 +26,7 @@ import { UsersModule } from './users/users.module'
 		}),
 		UsersModule,
 		AuthModule,
+		BarbershopsModule,
 	],
 })
 export class AppModule {}
