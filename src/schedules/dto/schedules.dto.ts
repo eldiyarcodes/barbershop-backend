@@ -29,3 +29,11 @@ export class CreateScheduleOkResponseDto {
 	@ApiProperty({ type: () => Schedule })
 	data: Schedule
 }
+
+export class DeleteSchedulesOkResponseDto {
+	@ApiProperty({ example: 'ok' })
+	status: string
+
+	@ApiProperty({ example: 'Удалено успешно' })
+	message: string
+}

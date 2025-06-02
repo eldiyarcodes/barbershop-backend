@@ -2,11 +2,20 @@ import { Roles } from '@/common/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { RolesGuard } from '@/common/guards/roles.guard'
 import { USER_ROLE } from '@/users/model/users.model'
-import { Body, Controller, Param, Patch, Post, UseGuards } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Delete,
+	Param,
+	Patch,
+	Post,
+	UseGuards,
+} from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import {
 	CreateScheduleDto,
 	CreateScheduleOkResponseDto,
+	DeleteSchedulesOkResponseDto,
 } from './dto/schedules.dto'
 import { SchedulesService } from './schedules.service'
 
@@ -15,7 +24,7 @@ import { SchedulesService } from './schedules.service'
 export class SchedulesController {
 	constructor(private schedulesService: SchedulesService) {}
 
-	@ApiOperation({ summary: 'Установить график мастера' })
+	@ApiOperation({ summary: 'Установить график' })
 	@ApiOkResponse({ type: CreateScheduleOkResponseDto })
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Roles(USER_ROLE.ADMIN)
@@ -26,7 +35,7 @@ export class SchedulesController {
 		return { status: 'ok', data }
 	}
 
-	@ApiOperation({ summary: 'Обновить график мастера' })
+	@ApiOperation({ summary: 'Обновить график' })
 	@ApiOkResponse({ type: CreateScheduleOkResponseDto })
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Patch('/:id')
@@ -37,5 +46,18 @@ export class SchedulesController {
 		const data = await this.schedulesService.updateSchedules(+id, dto)
 
 		return { status: 'ok', data }
+	}
+
+	@ApiOperation({ summary: 'Удалить график' })
+	@ApiOkResponse({ type: DeleteSchedulesOkResponseDto })
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Delete('/:id')
+	async delete(@Param('id') id: string) {
+		await this.schedulesService.deleteSchedules(+id)
+
+		return {
+			status: 'ok',
+			message: 'Удалено успешно',
+		}
 	}
 }

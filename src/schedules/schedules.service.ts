@@ -30,4 +30,14 @@ export class SchedulesService {
 
 		return await masterSchedule.update(schedulesDto)
 	}
+
+	async deleteSchedules(id: number) {
+		const schedules = await this.scheduleRepository.findByPk(id)
+
+		if (!schedules) {
+			throw new NotFoundException('График не найден')
+		}
+
+		await schedules.destroy()
+	}
 }
