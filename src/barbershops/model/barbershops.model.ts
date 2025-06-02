@@ -3,13 +3,13 @@ import { ApiProperty } from '@nestjs/swagger'
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript'
 
 export interface BarbershopCreationAttrs {
-  name: string
-  address: string
-  phone: string
-  description?: string
-  workDays: string[]
-  timeFrom: string
-  timeTo: string
+	name: string
+	address: string
+	phone: string
+	description?: string
+	workDays: string[]
+	timeFrom: string
+	timeTo: string
 }
 
 @Table({ tableName: 'barbershops', timestamps: true })

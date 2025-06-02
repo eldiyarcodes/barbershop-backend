@@ -12,6 +12,8 @@ import { Barbershop } from './barbershops/model/barbershops.model'
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard'
 import { MastersModule } from './masters/masters.module'
 import { Master } from './masters/model/masters.model'
+import { Schedule } from './schedules/model/schedules.model'
+import { SchedulesModule } from './schedules/schedules.module'
 
 @Module({
 	controllers: [],
@@ -28,13 +30,14 @@ import { Master } from './masters/model/masters.model'
 			username: CONFIG.POSTGRES_USER,
 			password: CONFIG.POSTGRES_PASSWORD,
 			database: CONFIG.POSTGRES_DB,
-			models: [User, Barbershop, Master],
+			models: [User, Barbershop, Master, Schedule],
 			autoLoadModels: true,
 		}),
 		UsersModule,
 		AuthModule,
 		BarbershopsModule,
 		MastersModule,
+		SchedulesModule,
 	],
 })
 export class AppModule {}
