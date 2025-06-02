@@ -1,3 +1,4 @@
+import { Public } from '@/common/decorators/public.decorator'
 import { Roles } from '@/common/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { RolesGuard } from '@/common/guards/roles.guard'
@@ -21,7 +22,6 @@ import {
 	GetAllBarbershopOkResponseDto,
 	UpdateBarbershopDto,
 } from './dto/barbershops.dto'
-import { Public } from '@/common/decorators/public.decorator'
 
 @ApiTags('Barbershop')
 @Controller('api/v1/barbershop')

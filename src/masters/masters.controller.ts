@@ -11,6 +11,7 @@ import {
 	Param,
 	Patch,
 	Post,
+	Query,
 	UseGuards,
 } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
@@ -41,18 +42,16 @@ export class MastersController {
 
 	@ApiOperation({ summary: 'Получить всех мастеров' })
 	@ApiOkResponse({ type: GetAllMastersOkResponseDto })
-	// @UseGuards(JwtAuthGuard)
 	@Public()
 	@Get()
-	async getAll() {
-		const data = await this.mastersService.getAll()
+	async getAll(@Query('barbershopId') barbershopId?: string) {
+		const data = await this.mastersService.getAll(Number(barbershopId))
 
 		return { status: 'ok', data }
 	}
 
 	@ApiOperation({ summary: 'Получить мастера по ID' })
 	@ApiOkResponse({ type: CreateMasterOkResponseDto })
-	// @UseGuards(JwtAuthGuard)
 	@Public()
 	@Get('/:id')
 	async getById(@Param('id') id: string) {

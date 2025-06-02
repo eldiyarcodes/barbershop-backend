@@ -25,7 +25,13 @@ export class MastersService {
 		return await this.masterRepository.create(masterDto)
 	}
 
-	async getAll() {
+	async getAll(barbershopId: number) {
+		if (barbershopId) {
+			return await this.masterRepository.findAll({
+				where: { barbershopId },
+			})
+		}
+
 		return await this.masterRepository.findAll()
 	}
 

@@ -7,6 +7,8 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
 import { SequelizeModule } from '@nestjs/sequelize'
+import { AppointmentssModule } from './appointments/appointments.module'
+import { Appointments } from './appointments/model/appointments.model'
 import { BarbershopsModule } from './barbershops/barbershops.module'
 import { Barbershop } from './barbershops/model/barbershops.model'
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard'
@@ -30,7 +32,7 @@ import { SchedulesModule } from './schedules/schedules.module'
 			username: CONFIG.POSTGRES_USER,
 			password: CONFIG.POSTGRES_PASSWORD,
 			database: CONFIG.POSTGRES_DB,
-			models: [User, Barbershop, Master, Schedule],
+			models: [User, Barbershop, Master, Schedule, Appointments],
 			autoLoadModels: true,
 		}),
 		UsersModule,
@@ -38,6 +40,7 @@ import { SchedulesModule } from './schedules/schedules.module'
 		BarbershopsModule,
 		MastersModule,
 		SchedulesModule,
+		AppointmentssModule,
 	],
 })
 export class AppModule {}

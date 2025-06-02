@@ -7,10 +7,19 @@ export interface BarbershopCreationAttrs {
 	address: string
 	phone: string
 	description?: string
-	workDays: string[]
+	workDays: BarbershopWorkDays[]
 	timeFrom: string
 	timeTo: string
 }
+
+export type BarbershopWorkDays =
+	| 'Mon'
+	| 'Tue'
+	| 'Wed'
+	| 'Thu'
+	| 'Fri'
+	| 'Sat'
+	| 'Sun'
 
 @Table({ tableName: 'barbershops', timestamps: true })
 export class Barbershop extends Model<Barbershop, BarbershopCreationAttrs> {
@@ -32,7 +41,7 @@ export class Barbershop extends Model<Barbershop, BarbershopCreationAttrs> {
 
 	@ApiProperty({ example: ['Mon', 'Tue', 'Wed'] })
 	@Column({ type: DataType.ARRAY(DataType.STRING), allowNull: false })
-	declare workDays: string[]
+	declare workDays: BarbershopWorkDays[]
 
 	@ApiProperty({ example: '10:00' })
 	@Column({ type: DataType.STRING, allowNull: false })

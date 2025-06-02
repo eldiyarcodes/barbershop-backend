@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger'
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator'
-import { Barbershop } from '../model/barbershops.model'
+import { Barbershop, BarbershopWorkDays } from '../model/barbershops.model'
 
 export class CreateBarbershopDto {
 	@ApiProperty({ example: 'Gentlemen Club' })
@@ -26,7 +26,7 @@ export class CreateBarbershopDto {
 	@ApiProperty({ example: ['Mon', 'Tue', 'Wed'] })
 	@IsArray()
 	@IsNotEmpty()
-	workDays: string[]
+	workDays: BarbershopWorkDays[]
 
 	@ApiProperty({ example: '10:00' })
 	@IsString()
