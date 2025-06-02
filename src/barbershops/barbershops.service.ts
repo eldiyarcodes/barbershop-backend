@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
+import { Op } from 'sequelize'
 import { CreateBarbershopDto, UpdateBarbershopDto } from './dto/barbershops.dto'
 import { Barbershop } from './model/barbershops.model'
 
@@ -13,7 +14,18 @@ export class BarbershopsService {
 		return await this.barbershopRepository.create(dto)
 	}
 
-	async getAll() {
+	async getAll(search: string) {
+		if (search) {
+			return await this.barbershopRepository.findAll({
+				where: {
+					[Op.or]: [
+						{ name: { [Op.iLike]: `%${search}%` } },
+						{ address: { [Op.iLike]: `%${search}%` } },
+					],
+				},
+			})
+		}
+
 		return await this.barbershopRepository.findAll()
 	}
 
@@ -23,7 +35,7 @@ export class BarbershopsService {
 		if (!shop) {
 			throw new NotFoundException('Барбершоп не найден')
 		}
-		
+
 		return shop
 	}
 
@@ -35,7 +47,7 @@ export class BarbershopsService {
 
 	async deleteBarbershop(id: number) {
 		const shop = await this.getById(id)
-		
+
 		await shop.destroy()
 	}
 }

@@ -11,6 +11,7 @@ import {
 	Param,
 	Patch,
 	Post,
+	Query,
 	UseGuards,
 } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
@@ -41,18 +42,16 @@ export class BarbershopsController {
 
 	@ApiOperation({ summary: 'Получить все барбершопы' })
 	@ApiOkResponse({ type: GetAllBarbershopOkResponseDto })
-	// @UseGuards(JwtAuthGuard)
 	@Public()
 	@Get()
-	async getAll() {
-		const data = await this.barbershopService.getAll()
+	async getAll(@Query('search') search: string) {
+		const data = await this.barbershopService.getAll(search)
 
 		return { status: 'ok', data }
 	}
 
 	@ApiOperation({ summary: 'Получить барбершоп по ID' })
 	@ApiOkResponse({ type: CreateBarbershopOkResponseDto })
-	// @UseGuards(JwtAuthGuard)
 	@Public()
 	@Get('/:id')
 	async getById(@Param('id') id: string) {
