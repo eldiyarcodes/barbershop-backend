@@ -73,22 +73,6 @@ export class AppointmentsService {
 		return appointment
 	}
 
-	async findByContact(name: string, phone: string) {
-		if (!name || !phone) {
-			throw new HttpException(
-				'Имя и телефон обязательны',
-				HttpStatus.BAD_REQUEST
-			)
-		}
-
-		return await this.appointmentsRepository.findAll({
-			where: {
-				name,
-				phone,
-			},
-		})
-	}
-
 	async remove(id: number) {
 		const appointment = await this.findOne(id)
 		await appointment.destroy()

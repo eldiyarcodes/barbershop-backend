@@ -72,18 +72,6 @@ export class AppointmentsController {
 		return { status: 'ok', data: appointment }
 	}
 
-	@ApiOperation({ summary: 'Получить записи по имени и телефону' })
-	@ApiOkResponse({ type: GetAllAppointmentOkResponseDto })
-	@Public()
-	@Get('/by-contact')
-	async findByContact(
-		@Query('name') name: string,
-		@Query('phone') phone: string
-	) {
-		const data = await this.appointmentsService.findByContact(name, phone)
-		return { status: 'ok', data }
-	}
-
 	@ApiOperation({ summary: 'Отменить запись' })
 	@ApiOkResponse({ type: DeleteAppointmentOkResponseDto })
 	@UseGuards(JwtAuthGuard, RolesGuard)
