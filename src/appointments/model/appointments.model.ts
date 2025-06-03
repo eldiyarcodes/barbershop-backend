@@ -1,5 +1,6 @@
 import { Barbershop } from '@/barbershops/model/barbershops.model'
 import { Master } from '@/masters/model/masters.model'
+import { User } from '@/users/model/users.model'
 import { ApiProperty } from '@nestjs/swagger'
 import {
 	Column,
@@ -10,6 +11,7 @@ import {
 } from 'sequelize-typescript'
 
 export interface AppointmentsCreationAttrs {
+	userId: number
 	masterId: number
 	barbershopId: number
 	startTime: string
@@ -39,6 +41,11 @@ export class Appointments extends Model<
 	@Column({ type: DataType.INTEGER, allowNull: false })
 	declare barbershopId: number
 
+	@ApiProperty({ example: 2 })
+	@ForeignKey(() => User)
+	@Column({ type: DataType.INTEGER, allowNull: false })
+	declare userId: number
+
 	@ApiProperty({ example: '2025-06-03' })
 	@Column({ type: DataType.DATEONLY, allowNull: false })
 	declare date: Date
@@ -61,4 +68,12 @@ export class Appointments extends Model<
 		defaultValue: 'pending',
 	})
 	declare status: AppointmentsStatus
+
+	@ApiProperty({ example: 'Ваня' })
+	@Column({ type: DataType.STRING, allowNull: false })
+	declare name: string
+
+	@ApiProperty({ example: '+996500234567' })
+	@Column({ type: DataType.STRING, allowNull: false })
+	declare phone: string
 }

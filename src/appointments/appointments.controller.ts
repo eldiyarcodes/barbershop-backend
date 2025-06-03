@@ -11,7 +11,6 @@ import {
 	Get,
 	Param,
 	ParseIntPipe,
-	Patch,
 	Post,
 	Query,
 	UseGuards,
@@ -24,8 +23,6 @@ import {
 	DeleteAppointmentOkResponseDto,
 	GetAllAppointmentOkResponseDto,
 	GetAppointmentByIdOkResponseDto,
-	UpdateAppointmentDto,
-	UpdateAppointmentOkResponseDto,
 } from './dto/appointments.dto'
 
 @ApiTags('Appointments')
@@ -35,7 +32,7 @@ export class AppointmentsController {
 
 	@ApiOperation({ summary: 'Создать запись' })
 	@ApiOkResponse({ type: CreateAppointmentOkResponseDto })
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(JwtAuthGuard)
 	@Roles(USER_ROLE.ADMIN)
 	@Post('/create')
 	async create(@Body() dto: CreateAppointmentDto) {
@@ -49,7 +46,7 @@ export class AppointmentsController {
 
 	@ApiOperation({ summary: 'Получить записи' })
 	@ApiOkResponse({ type: GetAllAppointmentOkResponseDto })
-	@Public()
+	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Get()
 	async findAll(
 		@Query('barbershopId') barbershopId?: number,
@@ -75,21 +72,19 @@ export class AppointmentsController {
 		return { status: 'ok', data: appointment }
 	}
 
-	@ApiOperation({ summary: 'Обновить запись' })
-	@ApiOkResponse({ type: UpdateAppointmentOkResponseDto })
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Roles(USER_ROLE.ADMIN)
-	@Patch(':id')
-	async update(
-		@Param('id', ParseIntPipe) id: number,
-		@Body() dto: UpdateAppointmentDto
+	@ApiOperation({ summary: 'Получить записи по имени и телефону' })
+	@ApiOkResponse({ type: GetAllAppointmentOkResponseDto })
+	@Public()
+	@Get('/by-contact')
+	async findByContact(
+		@Query('name') name: string,
+		@Query('phone') phone: string
 	) {
-		const appointment = await this.appointmentsService.update(id, dto)
-
-		return { status: 'ok', data: appointment }
+		const data = await this.appointmentsService.findByContact(name, phone)
+		return { status: 'ok', data }
 	}
 
-	@ApiOperation({ summary: 'Удалить запись' })
+	@ApiOperation({ summary: 'Отменить запись' })
 	@ApiOkResponse({ type: DeleteAppointmentOkResponseDto })
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Roles(USER_ROLE.ADMIN)
@@ -99,7 +94,7 @@ export class AppointmentsController {
 
 		return {
 			status: 'ok',
-			message: 'Удалено успешно',
+			message: 'Успешно отменено',
 		}
 	}
 }

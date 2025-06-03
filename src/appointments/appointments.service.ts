@@ -1,12 +1,14 @@
 import { Barbershop } from '@/barbershops/model/barbershops.model'
 import { Master } from '@/masters/model/masters.model'
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+	HttpException,
+	HttpStatus,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Op } from 'sequelize'
-import {
-	CreateAppointmentDto,
-	UpdateAppointmentDto,
-} from './dto/appointments.dto'
+import { CreateAppointmentDto } from './dto/appointments.dto'
 import { Appointments } from './model/appointments.model'
 
 @Injectable()
@@ -65,35 +67,26 @@ export class AppointmentsService {
 		const appointment = await this.appointmentsRepository.findByPk(id)
 
 		if (!appointment) {
-			throw new NotFoundException(`Запись с таким ID не найдена`)
+			throw new NotFoundException(`Запись с таким ID не найден`)
 		}
 
 		return appointment
 	}
 
-	async update(id: number, dto: UpdateAppointmentDto) {
-		const appointment = await this.findOne(id)
-
-		const master = await this.masterRepository.findByPk(dto.masterId)
-
-		if (!master) {
-			throw new NotFoundException('Мастер с таким ID не найден')
+	async findByContact(name: string, phone: string) {
+		if (!name || !phone) {
+			throw new HttpException(
+				'Имя и телефон обязательны',
+				HttpStatus.BAD_REQUEST
+			)
 		}
 
-		const barbershop = await this.barbershopRepository.findByPk(
-			dto.barbershopId
-		)
-
-		if (!barbershop) {
-			throw new NotFoundException('Барбершоп с таким ID не найден')
-		}
-
-		const data = {
-			...dto,
-			date: dto.date ? new Date(dto.date) : undefined,
-		}
-
-		return await appointment.update(data)
+		return await this.appointmentsRepository.findAll({
+			where: {
+				name,
+				phone,
+			},
+		})
 	}
 
 	async remove(id: number) {

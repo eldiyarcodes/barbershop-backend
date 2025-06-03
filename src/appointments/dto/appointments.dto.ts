@@ -37,6 +37,18 @@ export class CreateAppointmentDto {
 	@IsEnum(['pending', 'confirmed', 'cancelled', 'done'])
 	@IsOptional()
 	status?: AppointmentsStatus
+
+	@ApiProperty({ example: 'Иван' })
+	@IsString()
+	name: string
+
+	@ApiProperty({ example: '+77001234567' })
+	@IsString()
+	phone: string
+
+	@ApiProperty({ example: 2 })
+	@IsInt()
+	userId: number
 }
 
 export class UpdateAppointmentDto extends PartialType(CreateAppointmentDto) {
@@ -78,6 +90,6 @@ export class DeleteAppointmentOkResponseDto {
 	@ApiProperty({ example: 'ok' })
 	status: string
 
-	@ApiProperty({ example: 'Удалено успешно' })
+	@ApiProperty({ example: 'Успешно отменено' })
 	message: string
 }
