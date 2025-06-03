@@ -19,13 +19,13 @@ export class SchedulesService {
 		const masterSchedule = await this.scheduleRepository.findByPk(id)
 
 		if (!masterSchedule) {
-			throw new NotFoundException('График с таким ID не существует')
+			throw new NotFoundException('График не найден')
 		}
 
 		const master = await this.masterRepository.findByPk(schedulesDto.masterId)
 
 		if (!master) {
-			throw new NotFoundException('Мастер с таким ID не существует')
+			throw new NotFoundException('Мастер с таким ID не найден')
 		}
 
 		return await masterSchedule.update(schedulesDto)
