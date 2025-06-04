@@ -31,6 +31,16 @@ export class SchedulesService {
 		return await masterSchedule.update(schedulesDto)
 	}
 
+	async getSlotsForDate(masterId: number, date: string) {
+		return await this.scheduleRepository.findAll({
+			where: {
+				masterId,
+				date,
+			},
+			order: [['startTime', 'ASC']],
+		})
+	}
+
 	async deleteSchedules(id: number) {
 		const schedules = await this.scheduleRepository.findByPk(id)
 

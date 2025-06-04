@@ -11,7 +11,7 @@ import {
 
 export interface ScheduleCreationAttrs {
 	masterId: number
-	dayOfWeek: number // 0 - Sunday, 6 - Saturday
+	date: string // '2025-06-03'
 	startTime: string // формат '09:00'
 	endTime: string // формат '18:00'
 }
@@ -31,9 +31,9 @@ export class Schedule extends Model<Schedule, ScheduleCreationAttrs> {
 	@BelongsTo(() => Master)
 	declare master: Master
 
-	@ApiProperty({ example: 1, description: '0 - Sunday, 6 - Saturday' })
-	@Column({ type: DataType.INTEGER, allowNull: false })
-	declare dayOfWeek: number
+	@ApiProperty({ example: '2025-06-03' })
+	@Column({ type: DataType.DATEONLY, allowNull: false })
+	declare date: string
 
 	@ApiProperty({ example: '09:00' })
 	@Column({ type: DataType.TIME, allowNull: false })

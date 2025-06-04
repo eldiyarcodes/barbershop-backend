@@ -6,6 +6,7 @@ import {
 	Body,
 	Controller,
 	Delete,
+	Get,
 	Param,
 	Patch,
 	Post,
@@ -46,6 +47,18 @@ export class SchedulesController {
 		const data = await this.schedulesService.updateSchedules(+id, dto)
 
 		return { status: 'ok', data }
+	}
+
+	@ApiOperation({ summary: 'Получить список доступных слотов по дате' })
+	@ApiOkResponse({ type: CreateScheduleOkResponseDto })
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Get('available/:masterId/:date')
+	async getAvailableSlots(
+		@Param('masterId') masterId: string,
+		@Param('date') date: string
+	) {
+		const slots = await this.schedulesService.getSlotsForDate(+masterId, date)
+		return { status: 'ok', data: slots }
 	}
 
 	@ApiOperation({ summary: 'Удалить график' })
