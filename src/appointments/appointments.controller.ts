@@ -33,7 +33,6 @@ export class AppointmentsController {
 	@ApiOperation({ summary: 'Создать запись' })
 	@ApiOkResponse({ type: CreateAppointmentOkResponseDto })
 	@UseGuards(JwtAuthGuard)
-	@Roles(USER_ROLE.ADMIN)
 	@Post('/create')
 	async create(@Body() dto: CreateAppointmentDto) {
 		const appointment = await this.appointmentsService.create(dto)
@@ -47,6 +46,7 @@ export class AppointmentsController {
 	@ApiOperation({ summary: 'Получить записи' })
 	@ApiOkResponse({ type: GetAllAppointmentOkResponseDto })
 	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Roles(USER_ROLE.ADMIN)
 	@Get()
 	async findAll(
 		@Query('barbershopId') barbershopId?: number,
@@ -64,7 +64,7 @@ export class AppointmentsController {
 
 	@ApiOperation({ summary: 'Получить запись по ID' })
 	@ApiOkResponse({ type: GetAppointmentByIdOkResponseDto })
-	@Public()
+	@UseGuards(JwtAuthGuard)
 	@Get(':id')
 	async findOne(@Param('id', ParseIntPipe) id: number) {
 		const appointment = await this.appointmentsService.findOne(id)
@@ -74,8 +74,7 @@ export class AppointmentsController {
 
 	@ApiOperation({ summary: 'Отменить запись' })
 	@ApiOkResponse({ type: DeleteAppointmentOkResponseDto })
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Roles(USER_ROLE.ADMIN)
+	@UseGuards(JwtAuthGuard)
 	@Delete(':id')
 	async remove(@Param('id', ParseIntPipe) id: number) {
 		await this.appointmentsService.remove(id)

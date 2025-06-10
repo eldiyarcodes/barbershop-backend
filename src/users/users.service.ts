@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { UserDto } from './dto/users.dto'
 import { User } from './model/users.model'
@@ -15,6 +15,16 @@ export class UsersService {
 	async getAllUsers() {
 		const users = await this.userRepository.findAll()
 		return users
+	}
+
+	async getUserById(id: number){
+		const user = await this.userRepository.findByPk(id)
+
+		if (!user) {
+			throw new NotFoundException('Пользователь не найден')
+		}
+
+		return user
 	}
 
 	async getUserByEmail(email: string) {

@@ -38,3 +38,11 @@ export class UsersResponseDto {
 	@ApiProperty({ type: () => [User] })
 	data: User[]
 }
+
+export class UserResponseDto {
+	@ApiProperty({ example: 'ok' })
+	status: string
+
+	@ApiProperty({ type: () => User })
+	data: User
+}
