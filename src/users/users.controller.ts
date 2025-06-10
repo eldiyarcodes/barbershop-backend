@@ -1,10 +1,25 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common'
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Query,
+	UseGuards,
+} from '@nestjs/common'
+import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 
 import { Roles } from '@/common/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { RolesGuard } from '@/common/guards/roles.guard'
-import { UserResponseDto, UsersResponseDto } from './dto/users.dto'
+import {
+	CreateUserDto,
+	CreateUserOkResponseDto,
+	DeleteUserOkResponseDto,
+	UserSortOptions,
+	UsersResponseDto,
+} from './dto/users.dto'
 import { USER_ROLE } from './model/users.model'
 import { UsersService } from './users.service'
 
@@ -15,11 +30,18 @@ export class UsersController {
 
 	@ApiOperation({ summary: 'Получить всех пользователей' })
 	@ApiOkResponse({ type: UsersResponseDto })
+	@ApiQuery({ name: 'search', required: false, description: 'Поиск по email' })
+	@ApiQuery({
+		name: 'sort',
+		required: false,
+		enum: ['id', 'email'],
+		description: 'Поля для сортировки',
+	})
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Roles(USER_ROLE.ADMIN)
 	@Get('/')
-	async getAll() {
-		const data = await this.userService.getAllUsers()
+	async getAll(@Query() query: { sort: UserSortOptions; search: string }) {
+		const data = await this.userService.getAllUsers(query)
 
 		return {
 			status: 'ok',
@@ -27,17 +49,31 @@ export class UsersController {
 		}
 	}
 
-	@ApiOperation({ summary: 'Получить пользователя по ID' })
-	@ApiOkResponse({ type: UserResponseDto })
+	@ApiOperation({ summary: 'Создать пользователя' })
+	@ApiOkResponse({ type: CreateUserOkResponseDto })
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Roles(USER_ROLE.ADMIN)
-	@Get('/:id')
-	async getById(@Param('id') id: string) {
-		const data = await this.userService.getUserById(Number(id))
+	@Post('/')
+	async create(@Body() body: CreateUserDto) {
+		const user = await this.userService.createUser(body)
 
 		return {
 			status: 'ok',
-			data,
+			data: user,
+		}
+	}
+
+	@ApiOperation({ summary: 'Удалить пользователя' })
+	@ApiOkResponse({ type: DeleteUserOkResponseDto })
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Roles(USER_ROLE.ADMIN)
+	@Delete('/:id')
+	async getById(@Param('id') id: string) {
+		await this.userService.deleteUser(Number(id))
+
+		return {
+			status: 'ok',
+			message: 'Удалено успешно',
 		}
 	}
 }

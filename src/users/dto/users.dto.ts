@@ -39,10 +39,20 @@ export class UsersResponseDto {
 	data: User[]
 }
 
-export class UserResponseDto {
+export class CreateUserOkResponseDto {
 	@ApiProperty({ example: 'ok' })
 	status: string
 
 	@ApiProperty({ type: () => User })
 	data: User
 }
+
+export class DeleteUserOkResponseDto {
+	@ApiProperty({ example: 'ok' })
+	status: string
+
+	@ApiProperty({ example: 'Удалено успешно' })
+	message: string
+}
+
+export type UserSortOptions = 'id' | 'email'

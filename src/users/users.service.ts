@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
-import { UserDto } from './dto/users.dto'
+import { Op } from 'sequelize'
+import { UserDto, UserSortOptions } from './dto/users.dto'
 import { User } from './model/users.model'
 
 @Injectable()
@@ -12,19 +13,15 @@ export class UsersService {
 		return user
 	}
 
-	async getAllUsers() {
-		const users = await this.userRepository.findAll()
+	async getAllUsers(query: { sort: UserSortOptions; search: string }) {
+		const { search, sort = 'id' } = query
+
+		const users = await this.userRepository.findAll({
+			where: { email: { [Op.like]: `%${search}%` } },
+			order: [[sort, 'DESC']],
+		})
+
 		return users
-	}
-
-	async getUserById(id: number){
-		const user = await this.userRepository.findByPk(id)
-
-		if (!user) {
-			throw new NotFoundException('Пользователь не найден')
-		}
-
-		return user
 	}
 
 	async getUserByEmail(email: string) {
@@ -35,5 +32,15 @@ export class UsersService {
 
 		const plainUser = user?.get({ plain: true })
 		return plainUser
+	}
+
+	async deleteUser(userId: number) {
+		const user = await this.userRepository.findByPk(userId)
+
+		if (!user) {
+			throw new NotFoundException('Пользователь не найден')
+		}
+
+		await user.destroy()
 	}
 }
