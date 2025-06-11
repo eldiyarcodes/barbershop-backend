@@ -1,11 +1,6 @@
 import { Barbershop } from '@/barbershops/model/barbershops.model'
 import { Master } from '@/masters/model/masters.model'
-import {
-	HttpException,
-	HttpStatus,
-	Injectable,
-	NotFoundException,
-} from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Op } from 'sequelize'
 import { CreateAppointmentDto } from './dto/appointments.dto'
@@ -43,11 +38,17 @@ export class AppointmentsService {
 		return await this.appointmentsRepository.create(data)
 	}
 
-	async findAll(barbershopId?: number, masterId?: number, date?: string) {
+	async findAll(
+		barbershopId?: number,
+		masterId?: number,
+		date?: string,
+		search?: string
+	) {
 		const where: any = {}
 
 		if (barbershopId) where.barbershopId = barbershopId
 		if (masterId) where.masterId = masterId
+		if (search) where.name = { [Op.like]: `%${search}%` }
 		if (date) {
 			const dayStart = new Date(date)
 			dayStart.setHours(0, 0, 0, 0)

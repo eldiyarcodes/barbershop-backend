@@ -1,5 +1,4 @@
 // src/appointments/appointments.controller.ts
-import { Public } from '@/common/decorators/public.decorator'
 import { Roles } from '@/common/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { RolesGuard } from '@/common/guards/roles.guard'
@@ -51,12 +50,14 @@ export class AppointmentsController {
 	async findAll(
 		@Query('barbershopId') barbershopId?: number,
 		@Query('masterId') masterId?: number,
-		@Query('date') date?: string
+		@Query('date') date?: string,
+		@Query('search') search?: string
 	) {
 		const data = await this.appointmentsService.findAll(
 			barbershopId,
 			masterId,
-			date
+			date,
+			search
 		)
 
 		return { status: 'ok', data }
