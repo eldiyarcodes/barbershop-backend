@@ -44,8 +44,14 @@ export class MastersController {
 	@ApiOkResponse({ type: GetAllMastersOkResponseDto })
 	@Public()
 	@Get()
-	async getAll(@Query('barbershopId') barbershopId?: string) {
-		const data = await this.mastersService.getAll(Number(barbershopId))
+	async getAll(
+		@Query('barbershopId') barbershopId?: string,
+		@Query('search') search?: string
+	) {
+		const data = await this.mastersService.getAll(
+			Number(barbershopId),
+			String(search)
+		)
 
 		return { status: 'ok', data }
 	}

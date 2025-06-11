@@ -1,6 +1,7 @@
 import { Barbershop } from '@/barbershops/model/barbershops.model'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
+import { Op } from 'sequelize'
 import { CreateMasterDto, UpdateMasterDto } from './dto/masters.dto'
 import { Master } from './model/masters.model'
 
@@ -25,14 +26,16 @@ export class MastersService {
 		return await this.masterRepository.create(masterDto)
 	}
 
-	async getAll(barbershopId: number) {
+	async getAll(barbershopId: number, search: string) {
 		if (barbershopId) {
 			return await this.masterRepository.findAll({
 				where: { barbershopId },
 			})
 		}
 
-		return await this.masterRepository.findAll()
+		return await this.masterRepository.findAll({
+			where: { fullName: { [Op.like]: `%${search}%` } },
+		})
 	}
 
 	async update(id: number, masterDto: UpdateMasterDto) {
